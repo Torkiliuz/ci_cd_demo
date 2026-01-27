@@ -12,15 +12,6 @@ body {
   color: white;
 }
 
-/* Clouds overlay */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("https://i.imgur.com/9QZ7x8N.png") repeat-x;
-  opacity: 0.2;
-  pointer-events: none;
-}
 
 /* Input area */
 input, button {
