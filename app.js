@@ -14,7 +14,7 @@ async function searchCity() {
   resultsList.innerHTML = "";
   weatherDiv.innerHTML = "";
 
-  const url = `http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`;
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`;
 
   try {
     const response = await fetch(url);
@@ -44,7 +44,7 @@ async function fetchWeather(lat, lon) {
     const wind = data.wind.speed;
 
     const weatherIconId = data.weather[0].icon;
-    const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIconId}.png`;
+    const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconId}.png`;
     const hourly = await fetchHourlyForecast(lat, lon);
 
     const hourlyHtml = hourly.map(h => `
