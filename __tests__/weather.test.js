@@ -1,34 +1,45 @@
+import { test, beforeEach } from "node:test";
+import assert from "node:assert";
+
 import {
   fetchCities,
   fetchWeather,
   formatWeatherData
 } from "../api.js";
 
+// ===============================
+// MOCK FETCH
+// ===============================
+let fetchCalls = [];
 
-// Mock the global fetch API
-global.fetch = jest.fn();
+global.fetch = async (url) => {
+  fetchCalls.push(url);
+
+  return {
+    ok: true,
+    json: async () => ({})
+  };
+};
 
 beforeEach(() => {
-  fetch.mockClear();
+  fetchCalls = [];
 });
 
 // ===============================
 // TEST 1: City search API call
 // ===============================
 test("fetchCities calls OpenWeather geo API with correct query", async () => {
-  fetch.mockResolvedValueOnce({
-    ok: true,
-    json: async () => []
-  });
+  global.fetch = async (url) => {
+    fetchCalls.push(url);
+    return { ok: true, json: async () => [] };
+  };
 
   await fetchCities("Frankfurt");
 
-  expect(fetch).toHaveBeenCalledTimes(1);
-
-  const calledUrl = fetch.mock.calls[0][0];
-  expect(calledUrl).toContain("geo/1.0/direct");
-  expect(calledUrl).toContain("q=Frankfurt");
-  expect(calledUrl).toContain("limit=5");
+  assert.strictEqual(fetchCalls.length, 1);
+  assert.ok(fetchCalls[0].includes("geo/1.0/direct"));
+  assert.ok(fetchCalls[0].includes("q=Frankfurt"));
+  assert.ok(fetchCalls[0].includes("limit=5"));
 });
 
 // ===============================
@@ -43,7 +54,7 @@ test("formatWeatherData extracts temp, wind and icon", () => {
 
   const result = formatWeatherData(mockApiResponse);
 
-  expect(result).toEqual({
+  assert.deepStrictEqual(result, {
     temp: 1,
     wind: 5.14,
     icon: "09d",
@@ -55,16 +66,15 @@ test("formatWeatherData extracts temp, wind and icon", () => {
 // TEST 3: Weather API call
 // ===============================
 test("fetchWeather calls weather API with lat, lon and metric units", async () => {
-  fetch.mockResolvedValueOnce({
-    ok: true,
-    json: async () => ({})
-  });
+  global.fetch = async (url) => {
+    fetchCalls.push(url);
+    return { ok: true, json: async () => ({}) };
+  };
 
   await fetchWeather(50.11, 8.68);
 
-  const calledUrl = fetch.mock.calls[0][0];
-  expect(calledUrl).toContain("data/2.5/weather");
-  expect(calledUrl).toContain("lat=50.11");
-  expect(calledUrl).toContain("lon=8.68");
-  expect(calledUrl).toContain("units=metric");
+  assert.ok(fetchCalls[0].includes("data/2.5/weather"));
+  assert.ok(fetchCalls[0].includes("lat=50.11"));
+  assert.ok(fetchCalls[0].includes("lon=8.68"));
+  assert.ok(fetchCalls[0].includes("units=metric"));
 });
