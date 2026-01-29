@@ -2,7 +2,7 @@ name: App deployment with unit tests
 
 on:
   push:
-    branches: ["main"]
+    branches:
   workflow_dispatch:
 
 permissions:
