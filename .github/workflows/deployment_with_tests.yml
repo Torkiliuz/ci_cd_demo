@@ -36,9 +36,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
-
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
