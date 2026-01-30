@@ -34,7 +34,7 @@ test("fetchCities calls OpenWeather geo API with correct query", async () => {
     return { ok: true, json: async () => [] };
   };
 
-  await fetchCities("Frankfurt");
+  await fetchCities("Frankfurther");
 
   assert.strictEqual(fetchCalls.length, 1);
   assert.ok(fetchCalls[0].includes("geo/1.0/direct"));
